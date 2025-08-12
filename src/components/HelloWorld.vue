@@ -12,6 +12,17 @@ defineProps({
     <h1 class="green">{{ msg }}</h1>
     <h3>
       You’ve successfully created a project with
+       <el-button>I am ElButton</el-button>
+       <el-popover
+        class="box-item"
+        title="Title"
+        content="Top Left prompts info"
+        placement="top-start"
+      >
+        <template #reference>
+          <el-button>top-start</el-button>
+        </template>
+      </el-popover>
       <a href="https://vite.dev/" target="_blank" rel="noopener">Vite</a> +
       <a href="https://vuejs.org/" target="_blank" rel="noopener">Vue 3</a>.
     </h3>
