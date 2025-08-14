@@ -1,26 +1,20 @@
 #!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
+. "$(dirname -- "$0")/_/husky.sh"
 
 branch=$(git rev-parse --abbrev-ref HEAD)
 
 if [ "$branch" = "main" ]; then
   echo "这是 main 分支，开始打包..."
-  npm run build # 替换成你的打包命令
+  npm run build || exit 1 # 如果打包失败，立即退出脚本
 
-  # 如果打包命令执行成功
-  if [ $? -eq 0 ]; then
+  # 检查是否有新的文件需要提交
+  if ! git diff-index --quiet HEAD; then
     echo "打包成功，自动提交打包文件..."
-    # 提交打包后的文件
     git add .
     git commit -m "Auto-build for main branch"
-
-    # 使用 --no-verify 选项推送，以防止再次触发 pre-push 钩子
     git push origin main --no-verify
-
-    echo "打包并推送完成。"
   else
-    echo "打包失败，终止推送。"
-    exit 1 # 退出脚本，阻止原始的 git push
+    echo "打包后没有新的更改，跳过自动提交。"
   fi
 else
   echo "当前分支不是 main，跳过打包。"
